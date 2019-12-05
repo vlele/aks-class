@@ -1,0 +1,16 @@
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ServiceInstance
+metadata:
+    name: azure-mongodb-instance
+    labels:
+    app: mongodb
+spec:
+    clusterServiceClassExternalName: azure-cosmosdb-mongo-account
+    clusterServicePlanExternalName: account
+    parameters:
+        location: eastus
+        resourceGroup: aks-class-new
+        ipFilters:
+            allowedIPRanges:
+            -  "0.0.0.0/0"
+            allowAccessFromAzure: enabled

@@ -1,0 +1,10 @@
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ServiceBinding
+metadata:
+  name: azure-mongodb-binding
+  namespace: osba
+  
+spec:
+  instanceRef:
+    name: azure-mongodb-instance      # The name of the ServiceInstance to bind to
+  secretName: mdbsesecret  # The name of the Secret which contains the connection info
