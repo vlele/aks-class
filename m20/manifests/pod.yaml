@@ -1,0 +1,29 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mypod
+  labels:
+    run: my-nginx
+spec:
+  containers:
+  - name: mypod
+    image: lelev/dirdemo:v1
+    ports:
+    - containerPort: 80
+    env:
+    - name: VERSION
+      value: "1.0.123"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+    volumeMounts:
+    - mountPath: "/mnt/cloudstorage"
+      name: volume
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+        claimName: cloud-storage-claim
