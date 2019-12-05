@@ -1,0 +1,22 @@
+Modules 
+m1 Startup
+m2 Pods
+m3 Service
+m4 Replicaset
+m5 - Deamsonset 
+m6  - Mongo
+m7 Sidecar
+m8 Windows Containers 
+m9  Ingress Controller / External DNS ()
+m10 (storageclasses)
+m11  - Helm
+m12  - Auto Scale
+m13  -- Helm
+m14 --  Custom Service Account
+m15  -- POD Identity
+m16 -- Network policy
+m17 - OSBA Broker --> Try Itesh's script
+m18 - ACI
+m19  - Custom Resource Definition
+m20  - Multi CLoud
+m21  - Keda

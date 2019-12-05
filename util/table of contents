@@ -1,0 +1,14 @@
+alias.sh   --> all shortcuts
+get_credentials.sh  --> set the environment variables and call getcreds
+get_shell.sh -->get a disposable Ubuntu shell inside AKS  
+set_ns.sh ---> set namespace context
+create_cluster_advanced.sh --> VNET
+
+
+#Commands
+ps
+kill pid
+kubectl cluster-info 
+kubectl create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
+k delete pod --all
+Press ⌘ + Shift + n (incognito)
