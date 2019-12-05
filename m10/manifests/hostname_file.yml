@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hostname-file
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: hostname-file
+        version: v1
+    spec:
+      volumes:
+      - name: aksclassazurefilepvc
+        persistentVolumeClaim:
+          claimName: aksclassazurefilepvc
+      containers:
+      - image: rstarmer/hostname:v1
+        imagePullPolicy: Always
+        name: hostname
+        volumeMounts:
+          - mountPath: "/www"
+            name: aksclassazurefilepvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hostname-file
+  name: hostname-file
+spec:
+  ports:
+  - name: web
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  type: LoadBalancer
+  selector:
+    app: hostname-file
