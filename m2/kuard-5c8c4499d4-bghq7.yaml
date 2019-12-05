@@ -1,0 +1,55 @@
+Flag --export has been deprecated, This flag is deprecated and will be removed in future.
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  generateName: kuard-5c8c4499d4-
+  labels:
+    pod-template-hash: 5c8c4499d4
+    run: kuard
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: kuard-5c8c4499d4
+    uid: 93df8810-b6c7-11e9-8b06-aebfbc3aa110
+  selfLink: /api/v1/namespaces/concepts/pods/kuard-5c8c4499d4-bghq7
+spec:
+  containers:
+  - image: gcr.io/kuar-demo/kuard-amd64:1
+    imagePullPolicy: IfNotPresent
+    name: kuard
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-hr8k2
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  nodeName: aks-nodepool1-26884011-0
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: default-token-hr8k2
+    secret:
+      defaultMode: 420
+      secretName: default-token-hr8k2
+status:
+  phase: Pending
+  qosClass: BestEffort
