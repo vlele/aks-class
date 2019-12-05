@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hostname-key
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: hostname-key
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: hostname-key
+        version: v1
+    spec:
+      containers:
+      - image: rstarmer/hostname:v1
+        imagePullPolicy: Always
+        name: hostname
+        resources: {}
+      nodeSelector:
+        anykey: anyvalue 
+      restartPolicy: Always
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hostname-key
+  name: hostname-key
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: hostname-key
+  sessionAffinity: None
+  type: LoadBalancer
