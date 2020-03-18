@@ -1,0 +1,62 @@
+How to give the Demo on cluster-upgrade-blue-green?
+--------------------------------------------------
+Follow the below steps:
+- RG: "cluster-upgrade-blue-green-rg" Cluster Name: clust-upgrade
+- Demo consists of two parts:
+	A server that runs in cluster
+	A client that runs locally
+- Create a Cluster
+	> .\Create-Linux-Cluster.ps1 
+	> az aks get-credentials -g "cluster-upgrade-blue-green-rg" -n clust-upgrade  --overwrite
+	> kubectl create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
+	> az aks browse -g "cluster-upgrade-blue-green-rg" -n clust-upgrade  
+
+-  Deploy the application and expose it using type loadbalancer
+	> kubectl apply  -f sample-app-v1.yaml
+	> kubectl apply -f sample-app-svc.yaml
+	> kubectl get pods -l app=sample-app-v1
+-  Check if you got an external IP for your app
+	> kubectl get svc sample-app-svc
+-  Check if your app is running
+	> http://51.137.12.8
+	> kubectl get endpoints  sample-app-svc
+- Check the upgrades available 
+    > az aks get-upgrades -g "cluster-upgrade-blue-green-rg" -n clust-upgrade --output table
+	> az aks get-upgrades -g "cluster-upgrade-blue-green-rg" -n clust-upgrade --output json
+- Using nodepools in AKS, we can decouple the Control Plane upgrade from the nodes upgrade, and let's do it,
+  VVI Note: The following command works only in Az Cloud Shell
+    > az aks upgrade -g "cluster-upgrade-blue-green-rg" -n clust-upgrade -k 1.14.8 --control-plane-only
+    Output:
+		PS Azure:\> az aks upgrade -g "cluster-upgrade-blue-green-rg" -n clust-upgrade -k 1.14.8 --control-plane-only
+		Kubernetes may be unavailable during cluster upgrades.
+		Are you sure you want to perform this operation? (y/n): y
+		Since control-plane-only argument is specified, this will upgrade only the control plane to 1.14.8. Node pool will not change. Continue? (y/N): y
+		{
+		  "aadProfile": null,
+			... 
+		  "type": "Microsoft.ContainerService/ManagedClusters",
+		  "windowsProfile": null
+		}
+- Check the nodes
+  > kubectl get nodes
+    Output:
+	NAME                                STATUS   ROLES   AGE   VERSION
+	aks-nodepool1-34419880-vmss000000   Ready    agent   49m   v1.13.11
+  > az aks nodepool add  --resource-group "cluster-upgrade-blue-green-rg" --cluster-name clust-upgrade  --name node1418  --node-count 1  --node-vm-size "Standard_B2s" --kubernetes-version 1.14.8		
+  > kubectl get nodes
+    Output:
+		NAME                                STATUS   ROLES   AGE   VERSION
+		aks-node1418-34419880-vmss000000    Ready    agent   14m   v1.14.8
+		aks-nodepool1-34419880-vmss000000   Ready    agent   68m   v1.13.11
+  > while true;do curl -I 51.137.12.8 2>/dev/null | head -n 1 | cut -d$' ' -f2;  done     <-- we can use PostMan as well
+    Output:
+		This will return 200 continuously
+		
+- Run the below command from a Bash Shell
+  > kubectl apply -f sample-app-v2.yaml
+  > kubectl get pods -o wide
+    Notice two things,
+	- All Pods are running 
+	- Output in 
+		This will return 200 continuously without any break
+  > kubectl delete -f sample-app-v1.yaml	
