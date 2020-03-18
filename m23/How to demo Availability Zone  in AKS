@@ -1,0 +1,38 @@
+Q) How to give the Demo on backup-restore  in AKS?
+Ans) Follow the below steps:
+1) Finish Pre-requisites steps. You must have Azure CLI version 2.0.76 or later installed and configured. Run az --version to find the version.	
+2) Open a PowerShell and run az-basic-cmd.bat. Choose the Option 1 for subscription and Option 3 for location.
+3) Update the Create-Linux-Cluster.ps1 with appropriate values e.g., $GROUPNAME, $SUBSCRIPTION ... and run to create a Test Cluster 
+4) Now demo the Use Cases:
+   - Node distribution: 
+     We created 3 nodes, distributed as below. This can be seen by running "kubectl get nodes -l agentpool=nodepool1 --show-labels"
+      - failure-domain.beta.kubernetes.io/zone=eastus-1
+	  - failure-domain.beta.kubernetes.io/zone=eastus-2
+	  - failure-domain.beta.kubernetes.io/zone=eastus-3
+   - Deploy a 2 tier application using Node Affinity for Backend and Frontend using Inter-Pod Affinity rules
+   
+5) Run the Cleanup steps
+
+Useful commands:
+- az aks get-credentials -g test-backup-restore -n cluster1  --overwrite
+- az aks browse -g test-backup-restore -n cluster1
+- kubectl create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
+
+
+----------------------------x--------------------------------------x--------------------------------------x---------------------------------------------
+Info on Availability Zone(AZ) in AKS:
+- AZ is a HA offering that protects our applications and data from Datacenter(DC) failures. 
+- AZs are unique physical locations within an Azure Region(AR). Each AZ is made up of DC >=1. There’s a minimum of 3 separate AZs in all enabled ARs.
+- AKS cluster distributes resources( e.g.,nodes, storage) across logical sections of the underlying compute infrastructure. This makes the nodes run across separate **update and fault domains** in a single DC and provide HA to protect against a hardware failure or planned maintenance event.
+- Zone-redundant services replicate your applications and data across availability zones to protect from single-points-of-failure.
+- **--node-zones** parameter defines which zones agent nodes are deployed into. The AKS control plane components for our cluster are also spread across zones in the highest available configuration when we define the --node-zones parameter at cluster creation time.
+- The following are the limitations of an AKS cluster using AZ:
+   - We can only enable AZ when the cluster is created.
+   - AZ settings can't be updated after the cluster is created. 
+   - We also can't update an existing, non-availability zone cluster to use AZ.
+   - We can't disable AZ for an AKS cluster once it has been created.
+   - The node size (VM SKU) selected must be available across all AZ.
+   - Clusters with AZ enabled require use of Azure Standard Load Balancers for distribution across zones. This can only be defined at cluster create time.
+   - We must use Kubernetes version 1.13.5 or greater in order to deploy Standard Load Balancers.
+   - Volumes that use Azure managed disks are currently not zonal resources. Pods rescheduled in a different zone from their original zone can't reattach their previous disk(s). It's recommended to run stateless workloads that don't require persistent storage that may come across zonal issues.
+   - If we need to run stateful workloads, use taints and tolerations in our pod specs to tell the Kubernetes scheduler to create pods in the same zone as our disks. Alternatively, use network-based storage such as **Azure Files** that can attach to pods as they're scheduled between zones.
