@@ -1,0 +1,18 @@
+Q) How to give the Demo on backup-restore  in AKS?
+Ans) Follow the below steps:
+1) Finish Pre-requisites steps. You must untar velero-v1.2.0-windows-amd64.tar.gz and set the path to "velero.exe"
+   Velero consists of two parts server that runs  in cluster and  "velero.exe" that runs locally	
+2) Open a PowerShell and run az-basic-cmd.bat. Choose the Option 1 for subscription and Option 3 for location.
+3) Update the Create-Linux-Cluster.ps1 with appropriate values e.g., $GROUPNAME, $SUBSCRIPTION ... and run to create a Test Cluster
+4) Update the Install-Velero.ps1 with appropriate values e.g., $VELERO_RESOURCE_GROUP_NAME, $VELERO_STORAGE_ACCOUNT_NAME ... and run to install Velero
+5) Now demo the Use Case
+6) Run the Cleanup steps
+
+Useful commands:
+- az aks get-credentials -g test-backup-restore -n cluster1  --overwrite
+- az aks browse -g test-backup-restore -n cluster1
+- kubectl create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
+
+----------------------------x--------------------------------------x--------------------------------------x---------------------------------------------
+Info on backup-restore in AKS:
+- 
