@@ -52,5 +52,5 @@ metadata:
   namespace: default
 data:
   FUNCTIONS_WORKER_RUNTIME: bm9kZQ==
-  AzureWebJobsStorage: RGVmYXVsdEVuZHBvaW50c1Byb3RvY29sPWh0dHBzO0FjY291bnROYW1lPWtlZGFzdG9yYWdlYWNjO0FjY291bnRLZXk9citlZFhuTFcwMEh4RjVWbXpuWGpnS3BQYnVBbnkxdGVFalRYdXREZW03OGhjemNRN3h2d1UzRG5NWTJaUmQ3WkhsZDBVdHlzdW1odSs4bFc3U3NjaVE9PTtFbmRwb2ludFN1ZmZpeD1jb3JlLndpbmRvd3MubmV0
+  AzureWebJobsStorage: <Base64 encoded Connection String of the Azure Queue in Storage Account>
 ---
