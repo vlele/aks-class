@@ -23,15 +23,13 @@ kubectl get pods -o wide --all-namespaces
 #-->Install the ACI connector for both OS types 
 az aks install-connector -g $RESOURCE_GROUP_NAME -n $CLUSTER_NAME --connector-name virtual-kubelet --os-type linux        
 
-
 #--> List all nodes (notice the ACI nodes)
 kubectl get nodes 
 
 #--> Deploy pods into linux virtual kubelet
 kubectl create -f manifests/virtual-kubelet-linux-hello-world.yaml
-
-kubectl get pods
-
+kubectl get pods -o wide
+#--> Browse URL for "hello-world" application http://<ip> and see msg "Welcome to Azure Container Instances!" 
 # Cleanup Steps:
 helm del --purge virtual-kubelet-linux-eastus2
 helm del --purge virtual-kubelet-windows-eastus2
