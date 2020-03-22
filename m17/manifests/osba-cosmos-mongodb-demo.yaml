@@ -1,9 +1,12 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: osba-cosmos-mongodb-demo
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: osba-cosmos-mongodb-demo   
   template:
     metadata:
       labels:
