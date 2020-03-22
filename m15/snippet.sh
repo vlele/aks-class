@@ -22,7 +22,7 @@ echo $PrincipalId
 az identity list
 
 # Wait for some time(2-3 mins) and then execute the below command
-az role assignment create --role Reader --assignee $PrincipalId --scope /subscriptions/$SUBSCRIPTION_ID/resourcegroups/$MC_RESOURCE_GROUP_NAME
+az role assignment create --role "Reader" --assignee-object-id $PrincipalId --assignee-principal-type ServicePrincipal --resource-group $MC_RESOURCE_GROUP_NAME
 
 # 3. Pick up the “clientId” from the output of below command
 az identity show -n $AAD_NAME -g $MC_RESOURCE_GROUP_NAME
@@ -30,12 +30,13 @@ az identity show -n $AAD_NAME -g $MC_RESOURCE_GROUP_NAME
 # Edit the "manifests/demo/deployment.yaml" and "manifests/demo/aadpodidentity.yaml" files and provide "$client_id" copied from above step
 
 # 4. Install the Azure Pod Identity, Binding and Deploy a Pod
-
+kubectl apply -f manifests/demo/aadpodidentity.yaml
+kubectl apply -f manifests/demo/aadpodidentitybinding.yaml
 kubectl apply -f manifests/demo/deployment.yaml
 
 kubectl get pods
 
-# 5. Check the Logs for the results: Below command will show the message on VMs: msg="succesfully made GET on instance metadata". "compute":{"location":"eastus","name":"<VM Name>","offer":"aks","osType":"Linux"
+# 5. Check the Logs for the results: Below command will show the message on VMs: msg="succesfully acquired a token using the MSI, msiEndpoint(http://169.254.169.254/metadata/identity/oauth2/token) ..."
 kubectl logs <demo-your-pod-specific>
 
 # Cleanup Steps:
