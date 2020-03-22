@@ -8,23 +8,15 @@ cd ../m17
 NAMESPACE="osba"
 kubectl create namespace $NAMESPACE
 
-#--> AKS cluster is RBAC-enabled, we must create a service account and role binding for use with Tiller. 
-kubectl apply -f manifests/clusterrole-binding-sa.yaml
-
-#--> Check all pods in AKS cluster 
-kubectl get pods --all-namespaces --field-selector metadata.namespace!=kube-system
-
-#--> Check that we have a Service Account("tiller") in the cluster. 
-kubectl get serviceAccounts --all-namespaces
-
-#--> Configure Helm to use the tiller service account 
-helm init --upgrade --service-account tiller
-helm repo update
+#--> Execute the "install-helm-pre-requisites.sh" to create a service account, check tiller running in 'kube-system' and upgrade helm repo  
+. install-helm-pre-requisites.sh
 
 #--> Execute the "helper-sp-params.sh" and create a service principal that has rights on the subscription to create resources and initialize the variables  
 . helper-sp-params.sh
+
 #--> Install svc-cat/catalog
 . install-catalog.sh
+
 #--> Check the catalog installation. This is going to take "2-3" mins time
 kubectl get pods -n catalog
 
