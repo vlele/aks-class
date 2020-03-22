@@ -1,3 +1,8 @@
+# Set context to "$namespace" namespace
+kubectl config set-context $(kubectl config current-context) --namespace=$NAMESPACE
+# Use the context
+kubectl config use-context $(kubectl config current-context)
+
 helm fetch --untar azure/open-service-broker-azure
 sed -i 's|extensions/v1beta1|apps/v1|g' ./open-service-broker-azure/templates/deployment.yaml
 sed -i 's|extensions/v1beta1|apps/v1|g' ./open-service-broker-azure/charts/redis/templates/deployment.yaml
