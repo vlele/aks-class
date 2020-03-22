@@ -15,9 +15,9 @@ MYSQL_HELM_PACKAGE_NAME="my-release"
 kubectl create serviceaccount -n kube-system tiller
 # Create a cluster role binding
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+#--> Configure Helm and apply a Bug Fix to use the tiller service account.  Ref: https://github.com/helm/helm/issues/6374
+helm init --service-account tiller --output yaml | sed 's@apiVersion: extensions/v1beta1@apiVersion: apps/v1@' | sed 's@  replicas: 1@  replicas: 1\n  selector: {"matchLabels": {"app": "helm", "name": "tiller"}}@' | kubectl apply -f -
 
-#--> Configure Helm to use the tiller service account 
-helm init --upgrade --service-account tiller
 #--> Update Helm repo
 helm repo update
 
@@ -33,16 +33,15 @@ apt install wget
 #--> 2. Install the mysql client:
 apt-get update && apt-get install mysql-client -y
 
-#--> Now switch terminal abd obtain the mysql password 
+#--> Now switch to another terminal and obtain the mysql password by executing below command. It is a base64 encoded value. Be sure to decode it
 kubectl get secret my-release-mysql -o jsonpath="{.data.mysql-root-password}"
-#--> Be sure to decode it from base64
 #--> # Go to the URL https://www.base64decode.org and decode the String received above. The decode output  --> 0yESiQ0A0H
 
 #-->  Also print the same of the service by typing svcs"
 #--> . Connect using the mysql-client, then provide your password:
 
 svcs # note the name of my sql service
-mysql -h <> -p
+mysql -h my-release-mysql -p
 #mysql -h my-release-mysql -p
 show databases;
 
