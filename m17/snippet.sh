@@ -47,7 +47,8 @@ kubectl delete -f manifests/mongodb-service-instance.yaml
 helm del --purge catalog
 helm del --purge osba
 kubectl delete namespace $NAMESPACE
-
+kubectl delete namespaces osba
+kubectl delete namespaces catalog
 
  
 
