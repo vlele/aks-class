@@ -18,13 +18,12 @@ kubectl create -f manifests/storage-class-azure.yaml
 kubectl create -f manifests/persistent-volume-claim.yaml
 # Create the pod and associate with the persistent volume claim
 kubectl create -f manifests/pod.yaml
+# Show the "ClaimName:  cloud-storage-claim" is used in the pod and the corresonding PVC details shows "storage-provisioner: kubernetes.io/azure-disk"
+kubectl describe pod mypod
+kubectl describe pvc  cloud-storage-claim
 
 # Clean up:
-kubectl delete -f manifests/storage-class-azure.yaml
-kubectl delete -f manifests/persistent-volume-claim.yaml
-kubectl delete -f manifests/pod.yaml
-# Delete namespace
-kubectl delete namespace $NAMESPACE
+. delete.sh
 ##*****************************************************************************************************************
 
 ##***********************************Steps for the Google Cloud****************************************************
@@ -36,6 +35,10 @@ kubectl create -f storage-class-gcp.yaml
 kubectl create -f persistent-volume-claim.yaml
 # Create the pod and associate with the persistent volume claim
 kubectl create -f pod.yaml
+
+# Show the "ClaimName:  cloud-storage-claim" is used in the pod and the corresonding PVC details shows "storage-provisioner: kubernetes.io/gce-pd"
+kubectl describe pod mypod
+kubectl describe pvc  cloud-storage-claim
 
 # Clean up:
 kubectl delete -f storage-class-gcp.yaml
