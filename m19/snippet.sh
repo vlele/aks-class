@@ -7,20 +7,11 @@ cd ../m19
 
 NAMESPACE="default"
 
-#--> Create a ServiceAccount for the Website controller Deployment
-kubectl create serviceaccount website-controller
+#--> Install CRD Demo pre-requisites
+. install-crd-pre-requisites.sh
 
-#--> Create a ClusterRoleBinding to bind the website-controller ServiceAccount to the cluster-admin ClusterRole
-kubectl create clusterrolebinding website-controller  --clusterrole=cluster-admin --serviceaccount=default:website-controller
-
-#--> Create a website-controller to make Website objects run a web server pod exposed through a Service which will watch the API server for the creation of Website objects and then create the Service and the web server Pod for each of them.
-kubectl create -f manifests/website-controller.yaml
-
-#--> Create a CustomResourceDefinition(CRD) object to make Kubernetes accept our custom Website resource instances
-kubectl create -f manifests/website-crd.yaml
-
-#--> Create an instance of custom resource - Website
-kubectl create -f manifests/kubia-website.yaml
+#--> Create a website-controller, CustomResourceDefinition(CRD) object and an instance of custom resource - Website 
+. install-crd-demo.sh
 
 #--> List all the websites in your cluster
 kubectl get websites
@@ -34,21 +25,15 @@ kubectl get deploy,svc,po
 #-->  Display the logs of the Website controller
 kubectl logs <Your-website-controller> -c main
 
+#-->  Open a shell inside the "pod/kubia-website-xxxxxxxx-yyyyy" container("main") hosting the site
+kubectl exec <Your-kubia-website-pod> -c main -it ash
 
-#-->  Open a shell inside the kubia-website container("main") hosting the site
-kubectl exec kubia -c main -it ash
-
-#-->  Install necessary components inside the container to run "curl" command
+#-->  Open a PowerShell window and pre-requisite to run "curl" command
 apk add curl
 
 #-->  Run "curl" command inside the container and check response. It should say "<html><body>Hello there.</body></html>"
 curl http://<CLUSTER-IP>:80
 exit
 
-
 # Cleanup Steps:
-kubectl delete -f manifests/kubia-website.yaml
-kubectl delete -f manifests/website-crd.yaml
-kubectl delete -f manifests/website-controller.yaml
-kubectl delete serviceaccount website-controller
-kubectl delete  rs --all
+. delete.sh
