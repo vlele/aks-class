@@ -1,10 +1,13 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: website-controller
 spec:
   replicas: 1
-  template:
+  selector:
+    matchLabels:
+      app: website-controller
+  template:      
     metadata:
       name: website-controller
       labels:
@@ -13,6 +16,7 @@ spec:
       serviceAccountName: website-controller
       containers:
       - name: main
-        image: luksa/website-controller:latest
+        image: icsimlai/website-controller:v1
+        imagePullPolicy: Always
       - name: proxy
         image: luksa/kubectl-proxy:1.6.2
