@@ -5,13 +5,13 @@ metadata:
   namespace: prod
   labels:
     app: demo-taskapi
-    version: v2.0.0
+    version: v1.0.0
 data:
   config.json: |
     {
       "api": {
         "baseUri": "http://192.168.137.90:30090"
-        "taskapiserviceversion": "v2.0.0"
+        "taskapiserviceversion": "v1.0.0"
       }
     }
 ---
@@ -21,13 +21,13 @@ metadata:
   name: m1pod
   labels:
     app: demo-taskapi
-    version: v2.0.0
+    version: v1.0.0
 spec:
   imagePullSecrets:
     - name: taskapiacrsecret
   containers:
     - name: taskapi-aspnetcore
-      image: vlakstest1b359.azurecr.io/taskapi-aspnetcore:v2
+      image: vlakstest1b359.azurecr.io/taskapi-aspnetcore:v1
       terminationMessagePath: 
       ports:
         - containerPort: 80
